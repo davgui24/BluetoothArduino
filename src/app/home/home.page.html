@@ -1,0 +1,58 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Ionic Blank
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+    <ion-button expand="full" class="submit-button" (click)="listPairedDevices()">
+        <ion-icon name="refresh"></ion-icon>&nbsp; Actualizar dispositivo bluetooth
+    </ion-button>
+
+    <ion-row>
+        <ion-col>
+            <ion-list [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
+                <ion-radio-group>
+                    <ion-item *ngFor="let i of pairedList; let j index" (click)="selectDevice(i)">
+                        <ion-label>{{ i.name }}</ion-label>
+                        <!-- <ion-radio>{{ j }}</ion-radio> -->
+                    </ion-item>
+                </ion-radio-group>
+            </ion-list>
+        </ion-col>
+    </ion-row>
+
+
+    <!-- <ion-button expand="full" class="submit-button" *ngIf="listToggle" (click)="selectDevice()">
+        <ion-icon name="bluetooth"></ion-icon>&nbsp; Conectar dispositivo bluetooth
+    </ion-button>
+    <ion-list>
+        <ion-item>
+            <ion-label position="floating">Escribe los datos que quieres enviar</ion-label>
+            <ion-input type="text" name="datasend" [(ngModel)]="dataSend"></ion-input>
+        </ion-item>
+    </ion-list>
+
+
+    <ion-button expand="full" class="submit-button" (click)="sendData()">
+        <ion-icon name="send"></ion-icon>&nbsp; Enviar datos a través de bluetooth
+    </ion-button> -->
+
+    <hr>
+    <ion-label>Dispositivos no apareados</ion-label>
+    <ion-row>
+        <ion-col>
+            <ion-list [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
+                <ion-radio-group>
+                    <ion-item *ngFor="let i of noPairedList">
+                        <ion-label>{{ i.name }}</ion-label>
+                    </ion-item>
+                </ion-radio-group>
+            </ion-list>
+        </ion-col>
+    </ion-row>
+
+</ion-content>
