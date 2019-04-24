@@ -29,6 +29,14 @@ export class HomePage {
     this.checkBluetoothEnabled();
   }
 
+  ionViewDidLoad(){
+    this.bluetoothSerial.subscribe('\n').subscribe(
+      data=>{
+        this.alerta('Uint8Array: '+JSON.stringify(data));
+        this.bluetoothSerial.clear();
+    });
+  }
+
   checkBluetoothEnabled() {
     this.bluetoothSerial.isEnabled().then(
       success => {
@@ -55,17 +63,20 @@ export class HomePage {
     );
   }
 
-   // +++++++++++++++++++++++++++++
+  // +++++++++++++++++++++++++++++
 
-  listNoPairedDevices(){
+  listNoPairedDevices() {
     // success, failure
-    this.bluetoothSerial.discoverUnpaired().then(success => {
-       this.noPairedList = success;
-       this.listToggle = true;
-    }, error => {
-      this.showError("Por favor, habilite Bluetooth");
-      this.listToggle = false;
-    });
+    this.bluetoothSerial.discoverUnpaired().then(
+      success => {
+        this.noPairedList = success;
+        this.listToggle = true;
+      },
+      error => {
+        this.showError("Por favor, habilite Bluetooth");
+        this.listToggle = false;
+      }
+    );
   }
 
   // +++++++++++++++++++++++++++++
@@ -220,19 +231,22 @@ export class HomePage {
   }
 
   leer() {
-    this.bluetoothSerial.read().then(data => {
-      var bytes = new Uint8Array(data);
-      this.alerta('Uint8Array: '+JSON.stringify(bytes));
-    });
+    // this.bluetoothSerial.read().then(data => {
+    //   var bytes = new Uint8Array(data);
+    //   this.alerta('Uint8Array: '+JSON.stringify(bytes));
+    // });
+
+    this.bluetoothSerial.readUntil('\n').then(data => {
+      this.alerta('Esta es la data: '+JSON.stringify(data));
+    })
   }
 
   pendienteLeerDatos() {
     this.bluetoothSerial.subscribeRawData().subscribe(data => {
       this.leer();
-      this.alerta('DATA: '+JSON.stringify(data));
-  });
-}
-
+      this.alerta("DATA: " + JSON.stringify(data));
+    });
+  }
 
   // leer(address){
   //   this.bluetoothSerial.connectInsecure(address).subscribe((data) => {
