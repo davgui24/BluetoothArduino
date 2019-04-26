@@ -19,6 +19,9 @@ export class HomePage {
   dataSend: string = "";
   noPairedList: pairedlist;
 
+  data: any;
+  data2: any;
+
   constructor(
     private bluetoothSerial: BluetoothSerial,
     private alertCtrl: AlertController,
@@ -27,15 +30,18 @@ export class HomePage {
   ) {
     // this.leer();
     this.checkBluetoothEnabled();
+
+    this.pendienteLeerDatos();
   }
 
-  ionViewDidLoad(){
-    this.bluetoothSerial.subscribe('\n').subscribe(
-      data=>{
-        this.alerta('Uint8Array: '+JSON.stringify(data));
-        this.bluetoothSerial.clear();
-    });
-  }
+  // ionViewDidLoad(){
+  //   this.bluetoothSerial.subscribe('\n').subscribe(
+  //     data=>{
+  //       this.alerta('Data de inicio: '+JSON.stringify(data));
+  //       this.data = data;
+  //       // this.bluetoothSerial.clear();
+  //   });
+  // }
 
   checkBluetoothEnabled() {
     this.bluetoothSerial.isEnabled().then(
@@ -91,9 +97,6 @@ export class HomePage {
     let name = connectedDevice.name;
     this.connect(address);
     this.alerta(JSON.stringify(device));
-    // this.alerta(JSON.stringify(connectedDevice));
-    this.leer();
-    this.pendienteLeerDatos();
   }
 
   // +++++++++++++++++++++++++++++
@@ -230,36 +233,59 @@ export class HomePage {
     );
   }
 
-  leer() {
-    // this.bluetoothSerial.read().then(data => {
-    //   var bytes = new Uint8Array(data);
-    //   this.alerta('Uint8Array: '+JSON.stringify(bytes));
-    // });
 
-    this.bluetoothSerial.readUntil('\n').then(data => {
-      this.alerta('Esta es la data: '+JSON.stringify(data));
-    })
-  }
+
+
+  leer() {
+    this.bluetoothSerial.read().then(data => {
+      this.data = new TextDecoder('windows-1251').decode(data);
+      this.alerta("Lerr: --> " + this.data);
+      this.data = data;
+    });
+
+  //   this.bluetoothSerial.readUntil("\n").then(data => {
+  //     // let bytes = new Uint8Array(data);
+  //     // let enc = new Uint8Array(data);
+  //     // this.data = String.fromCharCode.apply(null, new Uint8Array(enc));
+  //     // this.alerta("Uint8Array: " + this.data);
+  //     // this.data = new Uint8Array(data);
+  
+  //     this.alerta('LERR --> ' + this.data);
+  // });
+}
+
+ 
 
   pendienteLeerDatos() {
-    this.bluetoothSerial.subscribeRawData().subscribe(data => {
-      this.leer();
-      this.alerta("DATA: " + JSON.stringify(data));
-    });
+    this.bluetoothSerial.subscribeRawData().subscribe(data2 => {
+      // let win1251decoder = new TextDecoder('windows-1251');
+      // this.data2  = new Uint8Array(data2);
+
+      // this.leer();
+      
+      this.data2 = new TextDecoder('x-cp1258').decode(data2);
+      this.alerta('Pendiente --> ' + this.data2);
+
+     
+    
+      // this.desSuscribirse();
+    
+    // let byte = new Uint8Array([68, 65, 86, 73, 68]);
+    // this.alerta('win1251decoder --> ' + win1251decoder.decode(byte)); // david!
+  });
   }
 
-  // leer(address){
-  //   this.bluetoothSerial.connectInsecure(address).subscribe((data) => {
-  //       this.alerta(JSON.stringify(data));
-  //       this.bluetoothSerial.subscribeRawData().subscribe((data) => {
-  //         this.alerta("Subscription : " + JSON.stringify(data));
-  //               this.bluetoothSerial.read().then((data) => {
-  //                  this.alerta("read data : " +JSON.stringify(data))
-  //                 });
-  //           });
-  //       });
-  //   }
+
+  desSuscribirse(){
+    this.bluetoothSerial.clear().then(success => {
+      this.showToast('Bien --> ' + success);
+    })
+    .catch(err => this.showToast('Mal --> ' + err))
+  }
+
 }
+
+
 
 interface pairedlist {
   class: number;
